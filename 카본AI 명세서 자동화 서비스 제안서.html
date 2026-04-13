@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Carbon AI 명세서 자동화 제안서 | HOOXI PARTNERS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;900&family=DM+Serif+Display&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --navy:      #091929;
+      --navy2:     #0d2236;
+      --navy3:     #112b42;
+      --teal:      #00b896;
+      --teal-soft: rgba(0,184,150,0.15);
+      --teal-line: rgba(0,184,150,0.3);
+      --blue:      #0e9be8;
+      --white:     #ffffff;
+      --off:       #f5f9fc;
+      --gray:      #7a8fa0;
+      --text:      #1a2a38;
+      --border:    rgba(255,255,255,0.1);
+      --card:      rgba(255,255,255,0.05);
+      --w: 860px;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      background: #e8edf2;
+      color: var(--text);
+      line-height: 1.7;
+    }
+    a { color: inherit; text-decoration: none; }
+
+    .doc-wrap {
+      max-width: var(--w);
+      margin: 0 auto;
+      box-shadow: 0 4px 60px rgba(0,0,0,0.18);
+    }
+
+    /* ─── COVER ─── */
+    .cover {
+      background: linear-gradient(160deg, #071523 0%, #0a2035 40%, #0d2d1f 100%);
+      padding: 72px 64px 60px;
+      position: relative; overflow: hidden;
+      color: var(--white);
+    }
+    .cover::before {
+      content: '';
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 55% 45% at 85% 20%, rgba(0,184,150,0.18) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 35% at 10% 80%, rgba(14,155,232,0.1) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .cover-grid {
+      position: absolute; inset: 0;
+      background-image: linear-gradient(rgba(0,184,150,0.04) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(0,184,150,0.04) 1px, transparent 1px);
+      background-size: 32px 32px;
+    }
+    .cover-inner { position: relative; }
+
+    .cover-top {
+      display: flex; justify-content: space-between; align-items: flex-start;
+      margin-bottom: 64px;
+    }
+    .logo-en { font-size: 11px; font-weight: 700; letter-spacing: 3px; color: var(--teal); margin-bottom: 4px; }
+    .logo-kr { font-size: 16px; font-weight: 700; color: rgba(255,255,255,0.9); }
+    .cover-date { text-align: right; font-size: 12px; color: rgba(255,255,255,0.4); line-height: 1.8; }
+
+    .cover-label {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--teal-soft); border: 1px solid var(--teal-line);
+      color: var(--teal); padding: 5px 14px; border-radius: 100px;
+      font-size: 11px; font-weight: 700; letter-spacing: 1px;
+      margin-bottom: 20px;
+    }
+    .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--teal); animation: blink 1.6s ease infinite; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+    .cover h1 {
+      font-size: 38px; font-weight: 900; line-height: 1.2;
+      letter-spacing: -1.5px; margin-bottom: 12px;
+    }
+    .cover h1 em { font-style: normal; color: var(--teal); }
+    .cover-sub { font-size: 15px; color: rgba(255,255,255,0.55); margin-bottom: 52px; line-height: 1.8; }
+
+    .cover-kpis {
+      display: flex; gap: 0;
+      border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; overflow: hidden;
+    }
+    .kpi {
+      flex: 1; padding: 22px 20px; text-align: center;
+      border-right: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.04);
+    }
+    .kpi:last-child { border-right: none; }
+    .kpi strong {
+      display: block; font-size: 32px; font-weight: 900; letter-spacing: -1px;
+      background: linear-gradient(135deg, var(--teal), var(--blue));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .kpi span { font-size: 12px; color: rgba(255,255,255,0.45); display: block; margin-top: 4px; }
+
+    .cover-bottom {
+      margin-top: 52px; padding-top: 28px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;
+    }
+    .recipient-block { font-size: 13px; color: rgba(255,255,255,0.5); }
+    .recipient-block strong { color: rgba(255,255,255,0.85); font-size: 14px; }
+    .confidential {
+      font-size: 10px; letter-spacing: 2px; font-weight: 700;
+      color: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.1);
+      padding: 4px 10px; border-radius: 4px;
+    }
+
+    /* ─── TOC ─── */
+    .toc {
+      background: var(--navy2); padding: 40px 64px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .toc-title { font-size: 11px; letter-spacing: 2.5px; font-weight: 700; color: var(--teal); text-transform: uppercase; margin-bottom: 20px; }
+    .toc-list { display: grid; grid-template-columns: 1fr 1fr; gap: 0; list-style: none; }
+    .toc-list li a {
+      display: flex; align-items: center; gap: 12px;
+      padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.06);
+      color: rgba(255,255,255,0.65); font-size: 13px; transition: color 0.2s;
+    }
+    .toc-list li a:hover { color: var(--teal); }
+    .toc-num {
+      width: 24px; height: 24px; border-radius: 50%;
+      background: rgba(0,184,150,0.12); border: 1px solid var(--teal-line);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 700; color: var(--teal); flex-shrink: 0;
+    }
+
+    /* ─── INTRO STRIP ─── */
+    .intro-strip {
+      background: var(--navy3); padding: 40px 64px;
+      border-left: 4px solid var(--teal);
+    }
+    .intro-strip p { font-size: 15px; line-height: 2; color: rgba(255,255,255,0.75); }
+    .intro-strip p strong { color: var(--white); }
+
+    /* ─── SECTION ─── */
+    .sec { background: var(--white); padding: 56px 64px; border-bottom: 1px solid #dde5ec; }
+    .sec:nth-child(even) { background: var(--off); }
+
+    .sec-header { margin-bottom: 32px; }
+    .sec-num {
+      font-size: 11px; font-weight: 700; letter-spacing: 2px;
+      color: var(--teal); margin-bottom: 8px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .sec-num::after { content: ''; flex: 1; height: 1px; background: var(--teal-line); max-width: 60px; }
+    .sec h2 { font-size: 26px; font-weight: 800; letter-spacing: -0.8px; line-height: 1.25; color: var(--text); }
+    .sec h2 em { font-style: normal; color: var(--teal); }
+    .sec-desc { font-size: 14px; color: #5a7080; margin-top: 8px; line-height: 1.8; }
+
+    /* pain cards */
+    .pain-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; margin-top: 28px; }
+    .pain-card {
+      border: 1px solid #dde5ec; border-radius: 12px; padding: 24px 20px;
+      background: var(--white); border-top: 3px solid #e85555;
+    }
+    .pain-icon { font-size: 24px; margin-bottom: 12px; }
+    .pain-card h3 { font-size: 14px; font-weight: 700; margin-bottom: 6px; color: var(--text); }
+    .pain-card p { font-size: 13px; color: #6a8090; line-height: 1.75; }
+
+    /* intro quote */
+    .intro-quote {
+      background: linear-gradient(135deg, #f0faf6, #eaf5fc);
+      border: 1px solid #c5e8da; border-radius: 12px; padding: 24px 28px;
+      margin-top: 24px; font-size: 14px; line-height: 2; color: #2a4a5a;
+    }
+    .intro-quote strong { color: var(--teal); font-weight: 700; }
+
+    /* feature blocks */
+    .feature-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 28px; }
+    .feature-card { border: 1px solid #dde5ec; border-radius: 12px; padding: 24px 22px; background: var(--white); }
+    .feature-card-head { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+    .feature-icon {
+      width: 40px; height: 40px; border-radius: 10px;
+      background: linear-gradient(135deg, var(--teal-soft), rgba(14,155,232,0.12));
+      border: 1px solid var(--teal-line);
+      display: flex; align-items: center; justify-content: center; font-size: 18px;
+    }
+    .feature-card h3 { font-size: 14px; font-weight: 700; color: var(--text); }
+    .feature-card p { font-size: 13px; color: #6a8090; line-height: 1.75; }
+
+    /* compare table */
+    .compare-wrap { margin-top: 28px; overflow-x: auto; }
+    table.compare { width: 100%; border-collapse: collapse; font-size: 13px; }
+    table.compare th { padding: 14px 16px; text-align: left; font-size: 12px; font-weight: 700; letter-spacing: 0.5px; }
+    table.compare th:first-child { background: #f0f4f8; color: #4a6070; width: 20%; }
+    table.compare th:nth-child(2) { background: #fff0f0; color: #c04040; }
+    table.compare th:nth-child(3) { background: #eafaf4; color: #008060; }
+    table.compare td { padding: 13px 16px; border-top: 1px solid #e8edf2; vertical-align: top; line-height: 1.75; }
+    table.compare td:first-child { background: #f8fafc; color: #4a6070; font-weight: 600; }
+    table.compare td:nth-child(2) { background: #fffafa; color: #7a4040; }
+    table.compare td:nth-child(3) { background: #f5fdf8; color: #2a5a40; }
+    .tag-bad  { color: #c04040; font-weight: 600; }
+    .tag-good { color: #008060; font-weight: 700; }
+
+    /* scope + effect two-col */
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; margin-top: 28px; }
+    .scope-box { background: var(--navy2); border-radius: 14px; padding: 28px 24px; color: var(--white); }
+    .scope-box h3 { font-size: 13px; font-weight: 700; color: var(--teal); letter-spacing: 0.5px; margin-bottom: 16px; }
+    .scope-item { padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.08); }
+    .scope-item:last-child { border-bottom: none; }
+    .scope-item h4 { font-size: 13px; font-weight: 700; color: rgba(255,255,255,0.9); margin-bottom: 4px; }
+    .scope-item p { font-size: 12px; color: rgba(255,255,255,0.5); line-height: 1.7; }
+
+    .effect-box { background: var(--off); border: 1px solid #dde5ec; border-radius: 14px; padding: 28px 24px; }
+    .effect-box h3 { font-size: 13px; font-weight: 700; color: var(--teal); letter-spacing: 0.5px; margin-bottom: 16px; }
+    .effect-item { display: flex; gap: 12px; padding: 10px 0; border-bottom: 1px solid #e5edf2; }
+    .effect-item:last-child { border-bottom: none; }
+    .effect-num {
+      min-width: 28px; height: 28px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--teal), var(--blue));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 800; color: var(--white); flex-shrink: 0;
+    }
+    .effect-item h4 { font-size: 13px; font-weight: 700; margin-bottom: 3px; }
+    .effect-item p { font-size: 12px; color: #6a8090; line-height: 1.7; }
+
+    /* pricing */
+    .price-table-wrap { margin-top: 28px; }
+    table.price { width: 100%; border-collapse: collapse; font-size: 13px; }
+    table.price thead tr th { padding: 14px 20px; text-align: left; font-size: 12px; font-weight: 700; letter-spacing: 0.5px; }
+    table.price thead tr th:first-child { background: var(--navy2); color: rgba(255,255,255,0.6); width: 22%; border-radius: 10px 0 0 0; }
+    table.price thead tr th:nth-child(2) { background: var(--navy3); color: rgba(255,255,255,0.6); width: 44%; }
+    table.price thead tr th:nth-child(3) { background: var(--teal); color: var(--navy); text-align: center; width: 18%; }
+    table.price thead tr th:nth-child(4) { background: var(--navy2); color: rgba(255,255,255,0.6); border-radius: 0 10px 0 0; }
+    table.price tbody tr td { padding: 14px 20px; border-top: 1px solid #dde5ec; vertical-align: top; }
+    table.price tbody tr td:first-child { font-weight: 700; background: #f8fafc; }
+    table.price tbody tr td:nth-child(3) { text-align: center; font-weight: 700; color: var(--teal); font-size: 15px; }
+    table.price tfoot tr td { padding: 14px 20px; background: var(--navy2); color: var(--white); font-weight: 700; border-top: 2px solid var(--teal); }
+    table.price tfoot tr td:nth-child(3) { color: var(--teal); font-size: 18px; text-align: center; }
+
+    .price-note {
+      margin-top: 16px; padding: 16px 20px;
+      background: #fffbf0; border: 1px solid #f0e0a0; border-radius: 8px;
+      font-size: 12px; color: #7a6030; line-height: 1.9;
+    }
+    .price-note strong { color: #b07820; }
+
+    /* CTA / CONTACT */
+    .contact-sec { background: linear-gradient(135deg, #071523 0%, #0a2a1a 100%); padding: 56px 64px; }
+    .contact-sec .sec-num { color: var(--teal); }
+    .contact-sec h2 { color: var(--white); }
+
+    .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 32px; }
+    .contact-card {
+      background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 14px; padding: 28px 24px;
+      display: flex; flex-direction: column; gap: 6px;
+    }
+    .contact-card .cc-type { font-size: 10px; font-weight: 700; letter-spacing: 2px; color: var(--teal); }
+    .contact-card .cc-name { font-size: 16px; font-weight: 700; color: var(--white); }
+    .contact-card .cc-title { font-size: 12px; color: rgba(255,255,255,0.5); margin-bottom: 10px; }
+    .contact-card .cc-row { display: flex; align-items: center; gap: 8px; font-size: 13px; color: rgba(255,255,255,0.7); }
+    .cc-icon { font-size: 14px; width: 18px; flex-shrink: 0; }
+
+    .contact-card-full {
+      background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 14px; padding: 24px;
+      display: flex; flex-direction: column; gap: 8px;
+    }
+    .contact-card-full .cc-label { font-size: 10px; font-weight: 700; letter-spacing: 2px; color: rgba(255,255,255,0.4); }
+    .contact-card-full .cc-val { font-size: 13px; color: rgba(255,255,255,0.7); }
+
+    .cta-highlight {
+      margin-top: 24px; padding: 24px 28px;
+      background: linear-gradient(135deg, rgba(0,184,150,0.15), rgba(14,155,232,0.1));
+      border: 1px solid var(--teal-line); border-radius: 12px;
+      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;
+    }
+    .cta-highlight p { font-size: 14px; color: rgba(255,255,255,0.75); line-height: 1.7; }
+    .cta-highlight strong { color: var(--teal); display: block; font-size: 15px; margin-bottom: 4px; }
+    .cta-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--teal); color: var(--navy);
+      padding: 12px 24px; border-radius: 8px;
+      font-size: 13px; font-weight: 800; white-space: nowrap;
+      transition: opacity 0.2s, transform 0.2s;
+    }
+    .cta-btn:hover { opacity: 0.88; transform: translateY(-2px); }
+
+    /* FOOTER */
+    .foot {
+      background: #040e18; padding: 28px 64px;
+      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;
+    }
+    .foot-logo { font-size: 13px; font-weight: 700; color: rgba(255,255,255,0.7); }
+    .foot-logo span { color: var(--teal); }
+    .foot p { font-size: 11px; color: rgba(255,255,255,0.3); }
+
+    /* RESPONSIVE */
+    @media(max-width: 700px){
+      .cover, .toc, .intro-strip, .sec, .contact-sec, .foot { padding-left: 28px; padding-right: 28px; }
+      .pain-grid, .feature-grid, .two-col, .contact-grid { grid-template-columns: 1fr; }
+      .toc-list { grid-template-columns: 1fr; }
+      .cover-kpis { flex-wrap: wrap; }
+      .kpi { min-width: 50%; }
+      .cover h1 { font-size: 28px; }
+      table.compare th:first-child, table.compare td:first-child { display: none; }
+      table.compare th, table.compare td { padding: 10px 12px; }
+      .cover-top { flex-direction: column; gap: 16px; }
+    }
+  </style>
+</head>
+<body>
+<div class="doc-wrap">
+
+<!-- ════ COVER ════ -->
+<div class="cover">
+  <div class="cover-grid"></div>
+  <div class="cover-inner">
+    <div class="cover-top">
+      <div class="logo-block">
+        <div class="logo-en">HOOXI PARTNERS</div>
+        <div class="logo-kr">(주)후시파트너스 · 카본솔루션실</div>
+      </div>
+    </div>
+
+    <div class="cover-label"><span class="dot"></span> 운수사 탄소 규제 대응 솔루션 제안서</div>
+    <h1>Carbon AI<br /><em>명세서 자동화 서비스</em><br />제안서</h1>
+    <p class="cover-sub">파격적인 비용으로 규제 대응부터 할당 리스크 대응 및 탄소 자산화까지 —<br />후시파트너스가 운수사의 실질적 파트너가 되겠습니다.</p>
+
+    <div class="cover-kpis">
+      <div class="kpi"><strong>80%</strong><span>행정 공수 절감</span></div>
+      <div class="kpi"><strong>50%↓</strong><span>명세서 비용 절감</span></div>
+      <div class="kpi"><strong>99%</strong><span>데이터 정확도</span></div>
+      <div class="kpi"><strong>3일</strong><span>도입 소요 기간</span></div>
+    </div>
+
+    <div class="cover-bottom">
+      <div class="recipient-block">제출처 : <strong>운수사 환경·안전 담당 부서 귀중</strong></div>
+      <div class="confidential">CONFIDENTIAL</div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ TOC ════ -->
+<div class="toc">
+  <div class="toc-title">목 차 · Contents</div>
+  <ul class="toc-list">
+    <li><a href="#sec1"><span class="toc-num">1</span> 왜 운수사에 Carbon AI가 필요한가</a></li>
+    <li><a href="#sec2"><span class="toc-num">2</span> 후시파트너스 Carbon AI 핵심 특징</a></li>
+    <li><a href="#sec3"><span class="toc-num">3</span> AS-IS vs TO-BE : 도입 전·후 비교</a></li>
+    <li><a href="#sec4"><span class="toc-num">4</span> 서비스 제공 범위 및 기대효과</a></li>
+    <li><a href="#sec5"><span class="toc-num">5</span> 가격 제안(안)</a></li>
+    <li><a href="#sec6"><span class="toc-num">6</span> 문의 및 서비스 신청</a></li>
+  </ul>
+</div>
+
+<!-- ════ INTRO ════ -->
+<div class="intro-strip">
+  <p>
+    제4차 계획기간의 시작과 함께 탄소 규제 대응의 난이도가 높아졌습니다. 이제 명세서 작성은 단순 제출 업무가 아니라
+    <strong>배출권 비용과 할당 리스크를 좌우하는 핵심 관리 과제</strong>가 되었습니다.<br />
+    후시파트너스 Carbon AI는 사업장 일반정보, 에너지 사용량, 배출시설별 활동자료 등 운수사 핵심 데이터를 구조화하여
+    명세서 작성과 NGMS 반영을 자동화하며, 이후의 할당취소 대응과 내부감축사업 연계까지 준비할 수 있는 체계를 제공합니다.
+  </p>
+</div>
+
+<!-- ════ SECTION 1 ════ -->
+<div class="sec" id="sec1">
+  <div class="sec-header">
+    <div class="sec-num">SECTION 01</div>
+    <h2>왜 운수사에 <em>Carbon AI</em>가 필요한가</h2>
+    <p class="sec-desc">강화되는 탄소 규제 속에서 운수사 담당자들이 직면하고 있는 3가지 핵심 과제입니다.</p>
+  </div>
+
+  <div class="pain-grid">
+    <div class="pain-card">
+      <div class="pain-icon">💸</div>
+      <h3>고비용 구조의 외부 의존성</h3>
+      <p>기존 컨설팅 업체에 의존하는 수동적 대응 방식은 매년 반복되는 고액의 컨설팅 비용 부담을 초래합니다. 유사 업무에 비용과 인력이 해마다 반복 투입됩니다.</p>
+    </div>
+    <div class="pain-card">
+      <div class="pain-icon">⏱️</div>
+      <h3>막대한 행정 리소스 소모</h3>
+      <p>방대한 운수 데이터를 수집·검증·증빙하는 과정에서 현업 실무자의 행정 업무 부담이 크게 증가합니다. 수천 장의 증빙 자료를 수동으로 수집합니다.</p>
+    </div>
+    <div class="pain-card">
+      <div class="pain-icon">📂</div>
+      <h3>단순 제출 중심의 데이터 관리</h3>
+      <p>현재 방식은 데이터가 '제출용'으로 소모되어 향후 할당취소 대응이나 배출권 수익화 전략으로 활용되지 못합니다. 연 1회 보고 업무에 머무르는 구조입니다.</p>
+    </div>
+  </div>
+
+  <div class="intro-quote">
+    후시파트너스는 운수사 명세서 업무를 단발성 제출 용역이 아니라 <strong>데이터 기반 규제 대응 체계</strong>로 전환합니다.
+    올해 명세서 작성에서 끝나는 것이 아니라 내년의 할당취소 대응, 초과배출 비용 최소화, 내부감축사업 발굴과
+    <strong>탄소 자산화까지 이어지는 실행형 파트너십</strong>을 제안드립니다.
+  </div>
+</div>
+
+<!-- ════ SECTION 2 ════ -->
+<div class="sec" id="sec2">
+  <div class="sec-header">
+    <div class="sec-num">SECTION 02</div>
+    <h2>후시파트너스 <em>Carbon AI</em> 핵심 특징</h2>
+    <p class="sec-desc">운수사 업무 환경에 최적화된 4가지 핵심 기능을 제공합니다.</p>
+  </div>
+
+  <div class="feature-grid">
+    <div class="feature-card">
+      <div class="feature-card-head">
+        <div class="feature-icon">📊</div>
+        <h3>배출량 실시간 모니터링</h3>
+      </div>
+      <p>총 인정 배출량, 생산량, 전년 대비 증감 추이 등을 한눈에 파악하여 목표 관리를 지원합니다. 데이터 입력 즉시 명세서가 자동 생성됩니다.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-card-head">
+        <div class="feature-icon">🚌</div>
+        <h3>운수사 특화 데이터 시각화</h3>
+      </div>
+      <p>월별 배출량 추세와 연료별(경유·CNG·전기) 사용 비중을 직관적인 차트로 제공합니다. 버스 대수·운행거리 기준 맞춤 분석을 수행합니다.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-card-head">
+        <div class="feature-icon">⚠️</div>
+        <h3>할당 리스크 사전 알림</h3>
+      </div>
+      <p>할당취소 15% 기준 접근 시 경고 알림을 제공하고, 초과 배출에 따른 비용 리스크를 사전에 진단합니다. 제출 직전 오류 확인 관행에서 벗어납니다.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-card-head">
+        <div class="feature-icon">🤖</div>
+        <h3>명세서 자동화 및 NGMS 연동</h3>
+      </div>
+      <p>자동화된 데이터 입력 현황과 명세서 작성 진행률을 실시간으로 확인하고, NGMS 반영을 준비합니다. 연료·전력·가스 증빙자료를 자동 맵핑합니다.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ════ SECTION 3 ════ -->
+<div class="sec" id="sec3">
+  <div class="sec-header">
+    <div class="sec-num">SECTION 03</div>
+    <h2>AS-IS vs TO-BE : <em>도입 전·후 비교</em></h2>
+    <p class="sec-desc">기존 수작업 방식과 Carbon AI 자동화 도입 이후의 변화를 항목별로 비교합니다.</p>
+  </div>
+
+  <div class="compare-wrap">
+    <table class="compare">
+      <thead>
+        <tr>
+          <th>비교 항목</th>
+          <th>😰 AS-IS · 기존 방식</th>
+          <th>✅ TO-BE · 후시 Carbon AI</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>업무 수행 방식</td>
+          <td class="tag-bad">자료 수기 취합 → 엑셀 재정리 → 명세서·NGMS 반복 입력</td>
+          <td class="tag-good">핵심 데이터 입력 시 명세서/NGMS 반영 정보 자동 생성, 반복 입력 최소화</td>
+        </tr>
+        <tr>
+          <td>비용 구조</td>
+          <td class="tag-bad">외부 컨설팅 의존도 높음 — 해마다 유사 업무에 비용·인력 반복 투입</td>
+          <td class="tag-good">자동화 기반으로 용역비와 내부 투입시간을 동시 절감 (50% 이상)</td>
+        </tr>
+        <tr>
+          <td>할당 리스크 대응</td>
+          <td class="tag-bad">제출 직전 오류 확인과 사후 수정 중심 — 선제적 대응 불가</td>
+          <td class="tag-good">배출량 변동 분석을 통한 초과배출·할당취소 리스크 사전 시뮬레이션</td>
+        </tr>
+        <tr>
+          <td>데이터 활용 가치</td>
+          <td class="tag-bad">연 1회 보고 업무에 머무름 — 제출 후 데이터가 휘발·소모</td>
+          <td class="tag-good">할당취소 대응, 내부감축사업 발굴, 탄소자산화까지 이어지는 데이터 자산 축적</td>
+        </tr>
+        <tr>
+          <td>행정 공수</td>
+          <td class="tag-bad">담당자 월 30~50시간 수작업 소모</td>
+          <td class="tag-good">80% 이상 공수 절감 — 실무자가 핵심 업무에 집중 가능</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ════ SECTION 4 ════ -->
+<div class="sec" id="sec4">
+  <div class="sec-header">
+    <div class="sec-num">SECTION 04</div>
+    <h2>서비스 제공 범위 및 <em>기대효과</em></h2>
+    <p class="sec-desc">후시파트너스 Carbon AI가 제공하는 서비스 범위와 운수사가 체감하는 실질적 기대효과입니다.</p>
+  </div>
+
+  <div class="two-col">
+    <div class="scope-box">
+      <h3>📋 서비스 제공 범위</h3>
+      <div class="scope-item">
+        <h4>① 명세서 자동화 및 NGMS 반영 지원</h4>
+        <p>사업장 일반정보, 배출량 현황, 배출시설별 원단위, 기타 참고사항을 운수업 데이터 구조에 맞게 정리하고, 연료·전력·가스 구매증빙 및 ERP자료를 명세서 체계에 맞게 맵핑합니다.</p>
+      </div>
+      <div class="scope-item">
+        <h4>② 할당 리스크 사전 분석</h4>
+        <p>배출량 변동에 따른 할당취소·추가할당 리스크를 검토하고, 초과배출 시 배출권 필요량 및 비용 시뮬레이션을 제공합니다.</p>
+      </div>
+      <div class="scope-item">
+        <h4>③ 명세서 이후 확장 서비스</h4>
+        <p>축적된 배출량·활동자료 DB를 기반으로 내부감축사업(전기버스) 후보를 발굴하고, KOC 위탁 판매 프로세스와 연계합니다.</p>
+      </div>
+    </div>
+
+    <div class="effect-box">
+      <h3>✨ 운수사 기대효과</h3>
+      <div class="effect-item">
+        <div class="effect-num">1</div>
+        <div>
+          <h4>[운영 효율] 행정 효율 극대화 및 리스크 차단</h4>
+          <p>데이터 수집·증빙 자동화로 실무 공수를 <strong>80% 이상 경감</strong>하고, 버스 대수·운행거리 기준 선제 시뮬레이션으로 할당취소 리스크를 사전에 점검합니다.</p>
+        </div>
+      </div>
+      <div class="effect-item">
+        <div class="effect-num">2</div>
+        <div>
+          <h4>[재무적 가치] 비용 절감 및 수익 극대화</h4>
+          <p>기존 컨설팅·수동 작성 대비 연간 명세서 대응 비용을 <strong>50% 이상 절감</strong>하고, 내부감축사업 연계로 감축실적의 자산화와 추가 수익 기회를 확보합니다.</p>
+        </div>
+      </div>
+      <div class="effect-item">
+        <div class="effect-num">3</div>
+        <div>
+          <h4>[미래 경쟁력] 탄소 자산화 및 선순환 구조</h4>
+          <p>배출권 비용 절감과 실적 인정을 전기버스 추가 도입 재원으로 연결하는 <strong>선순환 구조</strong>를 마련합니다.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ SECTION 5 ════ -->
+<div class="sec" id="sec5">
+  <div class="sec-header">
+    <div class="sec-num">SECTION 05</div>
+    <h2><em>가격 제안</em>(안)</h2>
+    <p class="sec-desc">투명하고 합리적인 가격 구조로 제안드립니다. 실제 사업장 규모에 맞는 최적 방안을 협의합니다.</p>
+  </div>
+
+  <div class="price-table-wrap">
+    <table class="price">
+      <thead>
+        <tr>
+          <th>구분</th>
+          <th>주요 내용</th>
+          <th>제안금액</th>
+          <th>비고</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>기본 패키지</td>
+          <td>Carbon AI 기반 명세서 자동화 및 NGMS 반영, 자료 맵핑, 제3자 검증 지원</td>
+          <td>3,000,000원</td>
+          <td>VAT 별도</td>
+        </tr>
+        <tr>
+          <td>부가 서비스 A</td>
+          <td>할당 리스크 사전 분석 및 비용 시뮬레이션 제공</td>
+          <td style="color:#008060;font-weight:800;">0원</td>
+          <td>선택 제공</td>
+        </tr>
+        <tr>
+          <td>부가 서비스 B</td>
+          <td>탄소배출권 최고가 거래 지원 (KOC 위탁 판매 연계)</td>
+          <td style="color:#008060;font-weight:800;">0원</td>
+          <td>선택 제공</td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="2" style="font-size:14px;color:rgba(255,255,255,0.8);">총 제안금액 (VAT 별도)</td>
+          <td>3,000,000원</td>
+          <td style="color:rgba(255,255,255,0.5);font-size:12px;">협의 가능</td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+
+  <div class="price-note">
+    <strong>※ 안내 사항</strong><br />
+    실제 제안금액은 사업장 수, 차량 대수, 자료 보유 수준, 현장 확인 필요 여부, 후속 지원 범위 확정 후 협의합니다.<br />
+    추가 제안 서비스 : 탄소배출권 할당 취소 대응 및 사전 할당 컨설팅 지원 별도 문의 (수원여객, 선진운수 사례 보유)
+  </div>
+</div>
+
+<!-- ════ SECTION 6 : CONTACT ════ -->
+<div class="contact-sec" id="sec6">
+  <div class="sec-header">
+    <div class="sec-num" style="color:var(--teal);">SECTION 06</div>
+    <h2 style="color:var(--white);">문의 및 <em>서비스 신청</em></h2>
+    <p class="sec-desc" style="color:rgba(255,255,255,0.5);">본 제안 내용에 대한 문의나 서비스 신청은 아래 담당자에게 연락주시기 바랍니다.</p>
+  </div>
+
+  <div class="contact-grid">
+    <div class="contact-card" style="border-color: rgba(0,184,150,0.3);">
+      <span class="cc-type">PRIMARY CONTACT · 주담당</span>
+      <span class="cc-name">박정음 책임연구원</span>
+      <span class="cc-title">카본솔루션실 · HOOXI PARTNERS</span>
+      <div class="cc-row"><span class="cc-icon">📞</span> 02-2682-3662</div>
+      <div class="cc-row"><span class="cc-icon">📱</span> 010-8887-1630</div>
+      <div class="cc-row"><span class="cc-icon">✉️</span> mijung@hooxipartners.com</div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:16px;">
+      <div class="contact-card-full">
+        <div class="cc-label">회사 정보</div>
+        <div class="cc-val" style="font-size:15px;font-weight:700;color:var(--white);">(주)후시파트너스 · HOOXI PARTNERS</div>
+        <div class="cc-val">서울시 영등포구 의사당대로 83 오투타워 19층</div>
+        <div class="cc-val">www.hooxipartners.com</div>
+      </div>
+      <div class="contact-card-full">
+        <div class="cc-label">운영 안내</div>
+        <div class="cc-val">평일 09:00 – 18:00 (토·일·공휴일 휴무)</div>
+        <div class="cc-val" style="color:var(--teal);font-weight:600;">상담 후 3영업일 이내 도입 시작 가능</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cta-highlight">
+    <div>
+      <strong>지금 바로 무료 상담을 신청하세요</strong>
+      도입 비용·방법에 대한 부담 없이 우선 상담해보세요.<br />
+      운수사 규모에 맞는 최적 방안을 제안해 드립니다.
+    </div>
+    <a href="mailto:mijung@hooxipartners.com?subject=Carbon AI 명세서 자동화 서비스 상담 신청" class="cta-btn">
+      ✉️ 상담 신청하기
+    </a>
+  </div>
+</div>
+
+<!-- ════ FOOTER ════ -->
+<div class="foot">
+  <div class="foot-logo">HOOXI PARTNERS <span>·</span> Carbon AI</div>
+  <p>© 2026 (주)후시파트너스. All rights reserved. 본 제안서의 내용은 수신자에 한하여 제공되며 무단 복제·배포를 금합니다.</p>
+</div>
+
+</div>
+</body>
+</html>
